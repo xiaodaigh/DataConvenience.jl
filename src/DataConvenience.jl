@@ -1,6 +1,11 @@
 module DataConvenience
 
-export nrow, ncol, head, tail, cor, dfcor, binary_info_plots
+using DataFrames:AbstractDataFrame
+using Statistics
+import Statistics:cor
+using Missings:nonmissingtype
+
+export nrow, ncol, head, tail, cor, dfcor
 
 nrow(df) = size(df, 1)
 
@@ -86,52 +91,6 @@ dfcor(df::AbstractDataFrame; cols1 = names(df), cols2 = names(df), verbose=false
     (names1[1:k-1], names2[1:k-1], res[1:k-1])
 end
 
-"""
-    For binary plots plot
-"""
-function binary_info_plots(df, target, var)
-    if nonmissingtype(eltype(df[!,var])) <: Number
-    else
-        println("skipped $var")
-        return false
-    end
 
-    dfm = dropmissing(df[:, [target, var]])
-
-    if size(dfm, 1) == 0
-        den = hline([0], title="$var: no nonmissing data ")
-    else
-        den = density(dfm[!, var], group=dfm[!, target], legend=:topleft, title="Density $var by $target")
-        den = density!(dfm[!, var], legend=:topleft, title="Density $var by $target", label="Overall $(unique(dfm[!,target]))")
-    end
-
-    dftmp = df[:, [target, var]]
-    dftmp[!, :missing] = ismissing.(dftmp[!,var])
-
-    df1g = by(dftmp, :missing, pct_target = target => mean)
-
-    if size(df1g, 1) == 1
-        savefig(den, "plots/binaryinfo/$var.png")
-    else
-        mhist =
-            groupedbar(df1g[!, :pct_target], group = df1g[!, :missing],
-            title = "% Target == 1 by ismissing($var)",
-            legendtitle = "$var is missing",
-            ylab = "% Target == 1",
-            legend = :bottomright,
-            legendfontsize=8,
-            legendtitlefontsize=10
-            )
-
-        mt = mean(df[!, target])
-        StatsPlots.hline!([mt], label = "Overall Average")
-
-        l = @layout [a; b]
-        p = plot(den, mhist, layout=l)
-        savefig(p, "plots/binaryinfo/$var.png")
-    end
-
-    return df1g
-end
 
 end # module
