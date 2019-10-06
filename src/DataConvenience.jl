@@ -15,49 +15,18 @@ head(df) = first(df, 10)
 
 tail(df) = last(df, 10)
 
-"""
-    Compute correlation in a DataFrames
 
 """
-dfcor(df::AbstractDataFrame, cols = names(df)) = begin
-    l = length(cols)
-
-    k = 1
-    res = Vector{Float32}(undef, Int(l*(l-1)/2))
-    names1 = Vector{Symbol}(undef, Int(l*(l-1)/2))
-    names2 = Vector{Symbol}(undef, Int(l*(l-1)/2))
-    for i in 1:length(cols)
-        if eltype(df[!, cols[i]]) >: String
-            # do nothing
-        else
-            for j in i+1:length(cols)
-                if eltype(df[!, cols[j]]) >: String
-                    # do nothing
-                else
-                    println(k, " ", cols[i], " ", cols[j])
-                    df2 = df[:,[cols[i], cols[j]]] |> dropmissing
-                    if size(df2, 1) > 0
-                        res[k] = cor(df2[!,1], df2[!, 2])
-                        names1[k] = cols[i]
-                        names2[k] = cols[i]
-                        k+=1
-                    end
-                end
-            end
-        end
-    end
-    (names1, names2, res)
-end
-
-
+    additional methods for computing correlation between Bool and other types
+"""
 Statistics.cor(x::Vector{Bool}, y::AbstractVector) = cor(y, Int.(x))
 Statistics.cor(x::Vector{Union{Bool, Missing}}, y::AbstractVector) = cor(y, passmissing(Int).(x))
 
-dfcor(df::AbstractDataFrame; cols1 = names(df), cols2 = names(df), verbose=false) = begin
-    if all(sort(cols1) .== sort(cols2))
-        return dfcor(df, cols1)
-    end
-
+"""
+    Compute correlation in a DataFrames by specifying a set of columns `cols1` vs
+    another set `cols2`
+"""
+dfcor(df::AbstractDataFrame, cols1 = names(df), cols2 = names(df); verbose=false) = begin    
     k = 1
     l1 = length(cols1)
     l2 = length(cols2)
