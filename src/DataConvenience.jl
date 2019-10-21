@@ -7,7 +7,7 @@ using Statistics
 using Missings:nonmissingtype
 
 import Statistics:cor
-export cor, dfcor, @replicate
+export cor, dfcor, @replicate, StringVector
 
 # head(df::AbstractDataFrame) = first(df, 10)
 #
