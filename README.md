@@ -1,11 +1,5 @@
 # DataConvenience
 
-`@replicate code times` will run `code` multiple times e.g.
-
-```julia
-@replicate randstring(8) 10
-```
-
 ## Corelations
 
 ### Correlation for `Bool`
@@ -19,5 +13,14 @@ Compute correlation in a DataFrames by specifying a set of columns `cols1` vs
 another set `cols2`. The cartesian product of `cols1` and `cols2`'s correlation
 will be computed
 
+## Miscellaneous
+
 ### StringVector
 `StringVector(v::CategoricalVector{String})` - Convert `v::CategoricalVector` efficiently to WeakRefStrings.StringVector
+
+### `@replicate`
+`@replicate code times` will run `code` multiple times e.g.
+
+```julia
+@replicate randstring(8) 10
+```
