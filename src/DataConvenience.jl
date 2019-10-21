@@ -23,7 +23,7 @@ using DataConvenience, Random
 @replicate randstring(8) 10 # returns 10 random length 8 strings
 ```
 """
-macro replicate(expr, n)
+macro replicate(n, expr)
     :([$(esc(expr)) for i=1:$(esc(n))])
 end
 
