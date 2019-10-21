@@ -22,5 +22,5 @@ will be computed
 `@replicate code times` will run `code` multiple times e.g.
 
 ```julia
-@replicate randstring(8) 10
+@replicate 10 randstring(8)
 ```

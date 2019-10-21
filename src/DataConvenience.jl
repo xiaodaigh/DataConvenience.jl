@@ -13,14 +13,14 @@ export cor, dfcor, @replicate
 #
 # tail(df::AbstractDataFrame) = last(df, 10)
 """
-    @replicate expr n
+    @replicate n expr
 
 Replicate the expression `n` times
 
 ## Example
 ```julia
 using DataConvenience, Random
-@replicate randstring(8) 10 # returns 10 random length 8 strings
+@replicate 10 randstring(8) # returns 10 random length 8 strings
 ```
 """
 macro replicate(n, expr)
