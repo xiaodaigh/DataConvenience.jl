@@ -1,32 +1,76 @@
 module DataConvenience
 
-using DataFrames:AbstractDataFrame
+import WeakRefStrings:StringVector
+using DataFrames: categorical
+using CategoricalArrays
 using Statistics
-import Statistics:cor
 using Missings:nonmissingtype
 
-export nrow, ncol, head, tail, cor, dfcor
+import Statistics:cor
+export cor, dfcor, @replicate
 
-nrow(df) = size(df, 1)
+# head(df::AbstractDataFrame) = first(df, 10)
+#
+# tail(df::AbstractDataFrame) = last(df, 10)
+"""
+    @replicate expr n
 
-ncol(df) = size(df, 2)
+Replicate the expression `n` times
 
-head(df) = first(df, 10)
+## Example
+```julia
+using DataConvenience, Random
+@replicate randstring(8) 10 # returns 10 random length 8 strings
+```
+"""
+macro replicate(expr, n)
+    :([$(esc(expr)) for i=1:$(esc(n))])
+end
 
-tail(df) = last(df, 10)
+"""
+    StringVector(v::CategoricalVector{String})
+
+Convert `v::CategoricalVector` efficiently to WeakRefStrings.StringVector
+
+## Example
+```julia
+using DataFrames
+a  = categorical(["a","c", "a"])
+a.refs
+a.pool.index
+
+# efficiently convert
+sa = StringVector(a)
+
+sa.buffer
+sa.lengths
+sa.offsets
+```
+"""
+StringVector(v::CategoricalVector{S}) where S<:AbstractString = begin
+    sa = StringVector(v.pool.index)
+    StringVector{S}(sa.buffer, sa.offsets[v.refs], sa.lengths[v.refs])
+end
 
 
 """
-    additional methods for computing correlation between Bool and other types
+    cor(x::AbstractVector{Bool}, y)
+
+    cor(y, x::AbstractVector{Bool})
+
+Compute correlation between `Bool` and other types
 """
-Statistics.cor(x::Vector{Bool}, y::AbstractVector) = cor(y, Int.(x))
-Statistics.cor(x::Vector{Union{Bool, Missing}}, y::AbstractVector) = cor(y, passmissing(Int).(x))
+Statistics.cor(x::AbstractVector{Bool}, y::AbstractVector) = cor(y, Int.(x))
+Statistics.cor(x::AbstractVector{Union{Bool, Missing}}, y::AbstractVector) = cor(y, passmissing(Int).(x))
 
 """
-    Compute correlation in a DataFrames by specifying a set of columns `cols1` vs
-    another set `cols2`
+    dfcor(df::AbstractDataFrame, cols1=names(df), cols2=names(df), verbose=false)
+
+Compute correlation in a DataFrames by specifying a set of columns `cols1` vs
+another set `cols2`. The cartesian product of `cols1` and `cols2`'s correlation
+will be computed
 """
-dfcor(df::AbstractDataFrame, cols1 = names(df), cols2 = names(df); verbose=false) = begin    
+dfcor(df::AbstractDataFrame, cols1 = names(df), cols2 = names(df); verbose=false) = begin
     k = 1
     l1 = length(cols1)
     l2 = length(cols2)
