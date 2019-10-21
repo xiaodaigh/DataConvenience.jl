@@ -18,6 +18,7 @@ will be computed
 ### StringVector
 `StringVector(v::CategoricalVector{String})` - Convert `v::CategoricalVector` efficiently to WeakRefStrings.StringVector
 
+### `@replicate`
 `@replicate code times` will run `code` multiple times e.g.
 
 ```julia
