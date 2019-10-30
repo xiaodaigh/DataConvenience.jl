@@ -1,13 +1,34 @@
 module DataConvenience
 
 import WeakRefStrings:StringVector
-using DataFrames: categorical
+using DataFrames: categorical, AbstractDataFrame, DataFrame, names!
 using CategoricalArrays
 using Statistics
 using Missings:nonmissingtype
+using RCall
 
 import Statistics:cor
 export cor, dfcor, @replicate, StringVector
+export cleannames!
+
+"""
+    cleannames!(df::DataFrame)
+
+Uses R's `janitor::clean_names` to clean the names
+"""
+function cleannames!(df::AbstractDataFrame)
+    rdf = DataFrame(df[1, :])
+    @rput rdf
+    R"""
+    new_names = names(janitor::clean_names(rdf))
+    """
+    @rget new_names
+    if new_names isa AbstractVector
+        names!(df, Symbol.(new_names))
+    else # must be singular
+        names!(df, [Symbol(new_names)])
+    end
+end
 
 # head(df::AbstractDataFrame) = first(df, 10)
 #
