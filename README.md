@@ -15,6 +15,9 @@ will be computed
 
 ## Miscellaneous
 
+### `cleannames!`
+Borrowed R's `janitor::clean_names` so that `cleannames!(df)` cleans the names of a `DataFrame`
+
 ### StringVector
 `StringVector(v::CategoricalVector{String})` - Convert `v::CategoricalVector` efficiently to WeakRefStrings.StringVector
 
