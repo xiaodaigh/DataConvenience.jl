@@ -169,5 +169,24 @@ end
 
 DateTimeN(str::String) = parseDateTimeN(str)
 
+################################################################################
+# convenient function for CategoricalArrays
+################################################################################
+import SortingLab:sorttwo!
+import StatsBase: rle
+using CategoricalArrays
+
+SortingLab.sorttwo!(x::CategoricalVector, y) = begin
+    SortingLab.sorttwo!(x.refs, y)
+    x, y
+end
+
+pooltype(::CategoricalPool{T,S}) where {T, S} = T,S
+
+rle(x::CategoricalVector) = begin
+   	refrle = rle(x.refs)
+   	T,S = pooltype(x.pool)
+   	(CategoricalArray{T, 1}(S.(refrle[1]), x.pool), refrle[2])
+end
 
 end # module
