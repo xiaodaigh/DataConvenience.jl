@@ -1,7 +1,7 @@
 module DataConvenience
 
 import WeakRefStrings:StringVector
-using DataFrames: categorical
+using DataFrames: categorical, AbstractDataFrame
 using CategoricalArrays
 using Statistics
 using Missings:nonmissingtype
