@@ -1,5 +1,7 @@
 export create_missing!
 
+using Missing: disallowmissing
+
 """
 	create_missing!(df, col::Symbol)
 
