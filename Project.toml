@@ -1,7 +1,7 @@
 name = "DataConvenience"
 uuid = "3b531cbf-ee43-4e67-8118-dca2c9372f86"
 authors = ["Dai ZJ <zhuojia.dai@gmail.com>"]
-version = "0.1.2"
+version = "0.1.1"
 
 [deps]
 CategoricalArrays = "324d7699-5711-5eae-9e2f-1d82baa6b597"
