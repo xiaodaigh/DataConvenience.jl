@@ -1,7 +1,7 @@
 name = "DataConvenience"
 uuid = "3b531cbf-ee43-4e67-8118-dca2c9372f86"
 authors = ["Dai ZJ <zhuojia.dai@gmail.com>"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 CategoricalArrays = "324d7699-5711-5eae-9e2f-1d82baa6b597"
@@ -16,8 +16,8 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 WeakRefStrings = "ea10d353-3f73-51f8-a26c-33c1cb351aa5"
 
 [compat]
-CategoricalArrays = "0.7.2"
-DataFrames = "0.19"
+CategoricalArrays = "0.7"
+DataFrames = "0.19, 0.20"
 Missings = "0.4"
 SortingLab = "0.2"
 StatsBase = "0.32"

@@ -1,6 +1,6 @@
 export create_missing!
 
-using Missing: disallowmissing
+using Missings: disallowmissing
 
 """
 	create_missing!(df, col::Symbol)

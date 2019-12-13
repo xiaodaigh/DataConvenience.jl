@@ -1,7 +1,7 @@
 export replace_onehot!
 
 using Flux: onehotbatch
-using DataFrames: select!
+using DataFrames: select!, Not
 
 """
     replace_onehot!(df, col) = begin
