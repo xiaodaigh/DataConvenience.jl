@@ -13,7 +13,7 @@ export cor, dfcor, @replicate, StringVector
 include("cate-arrays.jl")
 include("CCA.jl")
 include("janitor.jl")
-include("replace_onehot.jl")
+# include("replace_onehot.jl")
 include("create-missing.jl")
 include("read-csv-in-chunks.jl")
 
