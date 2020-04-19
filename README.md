@@ -10,38 +10,34 @@ Somewhat similiar to R's `janitor::clean_names` so that `cleannames!(df)` cleans
 
 ### CSV Chunk Reader
 
-You can read a CSV in chunks and apply logic to each chunk. The types of each column is inferred using the `limit` rows.
-
-for chunk in `CsvChunkIterator`
+You can read a CSV in chunks and apply logic to each chunk. The types of each column is inferred by `CSV.read`.
 
 ```julia
-chunk_size = 2^16 # the default value
-limit = 2^16 # the number of rows to use to infer type
 
-for chunk in CSVChunkIterator(filepath, chunk_size, limit = limit)
-  df = DataFrame(chunk)
+for chunk in CSVChunkIterator(filepath)
+  # chunk is a DataFrame
   # do something to df
 end
 ```
 
-The chunk iterator uses `CSV.Rows` parameters. The user can pass in `type` and `types` to dictate the types of each column e.g.
+The chunk iterator uses `CSV.read` parameters. The user can pass in `type` and `types` to dictate the types of each column e.g.
 
 ```julia
 # read all column as String
 for chunk in CSVChunkIterator(filepath, type=String)
-  df = DataFrame(chunk)
+  # df is a DataFrame where each column is String
   # do something to df
 end
 ```
 
 ```julia
 # read a three colunms csv where the column types are String, Int, Float32
-for chunk in CSVChunkIterator(filepath, types=[String, Int, Float32])
-  df = DataFrame(chunk)
+for chunk in CSVChunkIterator(filepath, types=[String, Int, Float32])  
   # do something to df
 end
 ```
 
+**Note** The chunks MAY have different column types.
 
 ## Statistics & Correlations
 
