@@ -14,7 +14,7 @@ You can read a CSV in chunks and apply logic to each chunk. The types of each co
 
 ```julia
 
-for chunk in CSVChunkIterator(filepath)
+for chunk in CsvChunkIterator(filepath)
   # chunk is a DataFrame
   # do something to df
 end
@@ -24,7 +24,7 @@ The chunk iterator uses `CSV.read` parameters. The user can pass in `type` and `
 
 ```julia
 # read all column as String
-for chunk in CSVChunkIterator(filepath, type=String)
+for chunk in CsvChunkIterator(filepath, type=String)
   # df is a DataFrame where each column is String
   # do something to df
 end
@@ -32,7 +32,7 @@ end
 
 ```julia
 # read a three colunms csv where the column types are String, Int, Float32
-for chunk in CSVChunkIterator(filepath, types=[String, Int, Float32])  
+for chunk in CsvChunkIterator(filepath, types=[String, Int, Float32])  
   # do something to df
 end
 ```
