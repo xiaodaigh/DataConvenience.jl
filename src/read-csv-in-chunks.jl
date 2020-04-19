@@ -14,27 +14,30 @@ using Base.Iterators
 
 Define a Chunking iterator on CSV file
 """
-struct CsvChunkIterator
-    chunk_iterator::Base.Iterators.PartitionIterator{T} where T
+mutable struct CsvChunkIterator
+    file::IOStream
+    step::Int
 
-    CsvChunkIterator(path::String, n = 2^16; limit = n, csv_rows_params...) = begin
-        # if you have specified type or types then don't infer type
-        if haskey(csv_rows_params, :type) | haskey(csv_rows_params, :types)
-            # don't do anything
-            csv_rows = CSV.Rows(path; csv_rows_params...)
-        else
-            df = CSV.read(path, limit = limit; csv_rows_params...)
-            types = [eltype(col) for col in eachcol(df)]
-            csv_rows = CSV.Rows(path, types = types; csv_rows_params...)
-        end
-
-        new(Iterators.partition(csv_rows, n))
+    CsvChunkIterator(path::String, csv_rows_params...) = begin
+         new(open(path, "r"), 2^30)
     end
 end
 
-Base.iterate(chunk_iterator::CsvChunkIterator) = Base.iterate(chunk_iterator.chunk_iterator)
+Base.iterate(chunk_iterator::CsvChunkIterator) = begin
+    bytes_read = read(chunk_iterator.file, chunk_iterator.step)
+    last_newline_pos = findlast(x->x==UInt8('\n'), bytes_read)
+    # no more to be read
+    if isnothing(last_newline_pos) & (length(bytes_read) == 0)
+        close(chunk_iterator.file)
+        return nothing
+    elseif length(bytes_read) == 0
 
-Base.iterate(chunk_iterator::CsvChunkIterator, tuple) = Base.iterate(chunk_iterator.chunk_iterator, tuple)
+    end
+    df = CSV.read(IOBuffer(@view bytes_read[1:last_newline_pos]))
+    return df, nothing
+end
+
+Base.iterate(chunk_iterator::CsvChunkIterator, _) = Base.iterate(chunk_iterator)
 
 # this is needed for `[a for a in chunk_iterator]` to work properly
 Base.IteratorSize(chunk_iterator::CsvChunkIterator) = Base.SizeUnknown()
