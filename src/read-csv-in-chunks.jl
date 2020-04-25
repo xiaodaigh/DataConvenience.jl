@@ -1,8 +1,7 @@
 export CsvChunkIterator
-
-
 using CSV
 using DataFrames: DataFrame, names
+using NamedTupleTools: delete
 
 import Base: iterate, length, IteratorSize
 using Base.Iterators
@@ -15,12 +14,11 @@ Define a Chunking iterator on CSV file
 mutable struct CsvChunkIterator
     file::IOStream
     step::Int
-    first_read::Bool # reading  the first time
     column_headers::Vector{Symbol}
     csv_rows_params
 
     CsvChunkIterator(path::String; csv_rows_params...) = begin
-         new(open(path, "r"), 2^30, true, Symbol[], csv_rows_params)
+         new(open(path, "r"), 2^30, Symbol[], csv_rows_params)
     end
 end
 
@@ -32,7 +30,7 @@ Base.iterate(chunk_iterator::CsvChunkIterator) = begin
         close(chunk_iterator.file)
         return nothing
     end
-    if chunk_iterator.first_read
+    if position(chunk_iterator.file) == 0
         df =
             CSV.read(
                 IOBuffer(
@@ -47,10 +45,7 @@ Base.iterate(chunk_iterator::CsvChunkIterator) = begin
         chunk_iterator.first_read = false
 
         # removes header options from table
-        c = chunk_iterator.csv_rows_params
-        d = Dict(c for c in zip(keys(c), values(c)))
-        delete!(d, :header)
-        chunk_iterator.csv_rows_params = (; d...)
+        chunk_iterator.csv_rows_params = delete(chunk_iterator.csv_rows_params, :header)
     else
         df =
             CSV.read(
@@ -61,6 +56,9 @@ Base.iterate(chunk_iterator::CsvChunkIterator) = begin
                 chunk_iterator.csv_rows_params...
             )
     end
+
+    new_pos = position(chunk_iterator.file) - (length(bytes_read) - last_newline_pos)
+    seek(chunk_iterator.file, new_pos)
     return df, nothing
 end
 
