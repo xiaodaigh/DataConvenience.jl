@@ -8,9 +8,7 @@ import Base: iterate, length, IteratorSize
 using Base.Iterators
 
 """
-    csv_chunks"path/to/JDFfile.jdf"
-
-    CSV_CHUNKS("path/to/file.csv")
+    CsvChunkIterator("path/to/file.csv")
 
 Define a Chunking iterator on CSV file
 """
