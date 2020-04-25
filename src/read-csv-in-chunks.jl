@@ -17,20 +17,33 @@ mutable struct CsvChunkIterator
     column_headers::Vector{Symbol}
     csv_rows_params
 
-    CsvChunkIterator(path::String; csv_rows_params...) = begin
-         new(open(path, "r"), 2^30, Symbol[], csv_rows_params)
+    CsvChunkIterator(path::String, chunk_byte_size = 2^30; csv_rows_params...) = begin
+         new(open(path, "r"), chunk_byte_size, Symbol[], csv_rows_params)
     end
 end
 
 Base.iterate(chunk_iterator::CsvChunkIterator) = begin
+    first_read = position(chunk_iterator.file) == 0
     bytes_read = read(chunk_iterator.file, chunk_iterator.step)
     last_newline_pos = findlast(x->x==UInt8('\n'), bytes_read)
+
     # no more to be read
     if isnothing(last_newline_pos) & (length(bytes_read) == 0)
         close(chunk_iterator.file)
         return nothing
+    elseif isnothing(last_newline_pos)
+        if eof(chunk_iterator.file)
+            close(chunk_iterator.file)
+            # do nothing and go to CSV.read
+            last_newline_pos = length(bytes_read)
+        else # increase step size
+            chunk_iterator.step = 2chunk_iterator.step
+            seek(chunk_iterator.file, position(chunk_iterator.file) - length(bytes_read))
+            return iterate(chunk_iterator)
+        end
     end
-    if position(chunk_iterator.file) == 0
+
+    if first_read
         df =
             CSV.read(
                 IOBuffer(
@@ -41,11 +54,11 @@ Base.iterate(chunk_iterator::CsvChunkIterator) = begin
 
         chunk_iterator.column_headers = names(df)
 
-        # make the second read not read header
-        chunk_iterator.first_read = false
-
         # removes header options from table
-        chunk_iterator.csv_rows_params = delete(chunk_iterator.csv_rows_params, :header)
+        c = chunk_iterator.csv_rows_params
+        d = Dict(zip(keys(c), values(c))...)
+        delete!(d, :head)
+        chunk_iterator.csv_rows_params = (;d...)
     else
         df =
             CSV.read(

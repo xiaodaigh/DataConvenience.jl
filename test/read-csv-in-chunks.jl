@@ -9,8 +9,29 @@ using Test
 
     # read the file 7 rows at a time
     # where the file is of size 32 rows
+    chunks = CsvChunkIterator(filepath, 10)
+    dfs = [DataFrame(chunk) for chunk in chunks]
+
+    made = reduce(vcat, dfs)
+    actual = CSV.read(filepath)
+    @test nrow(made) == nrow(actual)
+    @test ncol(made) == ncol(actual)
+
+    # read the file 7 rows at a time
+    # where the file is of size 32 rows
+    chunks = CsvChunkIterator(filepath, 500)
+    dfs = [DataFrame(chunk) for chunk in chunks]
+
+    made = reduce(vcat, dfs)
+    @test nrow(made) == nrow(actual)
+    @test ncol(made) == ncol(actual)
+
+    # read the file 7 rows at a time
+    # where the file is of size 32 rows
     chunks = CsvChunkIterator(filepath)
     dfs = [DataFrame(chunk) for chunk in chunks]
 
-    @test nrow(reduce(vcat, dfs)) == nrow(CSV.read(filepath))
+    made = reduce(vcat, dfs)
+    @test nrow(made) == nrow(actual)
+    @test ncol(made) == ncol(actual)
 end
