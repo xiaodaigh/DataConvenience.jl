@@ -1,7 +1,6 @@
 export CsvChunkIterator
 using CSV
 using DataFrames: DataFrame, names
-using NamedTupleTools: delete
 
 import Base: iterate, length, IteratorSize
 using Base.Iterators
