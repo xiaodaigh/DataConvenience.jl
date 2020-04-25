@@ -31,7 +31,7 @@ Base.iterate(chunk_iterator::CsvChunkIterator) = begin
         close(chunk_iterator.file)
         return nothing
     elseif length(bytes_read) == 0
-
+        # do nothing
     end
     df = CSV.read(IOBuffer(@view bytes_read[1:last_newline_pos]))
     return df, nothing
