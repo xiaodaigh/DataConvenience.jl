@@ -4,6 +4,16 @@ An eclectic collection of convenience functions for you.
 
 ## Data
 
+### Faster `fsort`
+
+You can sort `DataFrame`s (in ascending order only) faster than the `sort` function by using the `fsort` function. E.g.
+
+```
+fsort(df, :col) # sort by `:col`
+fsort(df, [:col1, :col2]) # sort by `:col1` and `:col2`
+```
+
+
 ### `cleannames!`
 Somewhat similiar to R's `janitor::clean_names` so that `cleannames!(df)` cleans the names of a `DataFrame`.
 
@@ -32,7 +42,7 @@ end
 
 ```julia
 # read a three colunms csv where the column types are String, Int, Float32
-for chunk in CsvChunkIterator(filepath, types=[String, Int, Float32])  
+for chunk in CsvChunkIterator(filepath, types=[String, Int, Float32])
   # do something to df
 end
 ```

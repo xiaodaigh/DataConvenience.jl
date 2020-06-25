@@ -1,11 +1,16 @@
 using DataFrames
-using RDatasets
 using CSV
 using Test
+using Random: randstring
 
 @testset "read csv in chunks" begin
-    filepath = "mtcars.csv"
-    CSV.write(filepath, dataset("datasets", "mtcars"))
+    filepath = "tmp.csv"
+
+    M = 100_000
+    str_base = [randstring(8) for i in 1:1_000]
+    df = DataFrame(int = rand(Int32, M), float=rand(M), str = rand(str_base, M))
+
+    CSV.write(filepath, df)
 
     # read the file 7 rows at a time
     # where the file is of size 32 rows
