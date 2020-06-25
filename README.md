@@ -4,13 +4,15 @@ An eclectic collection of convenience functions for you.
 
 ## Data
 
-### Faster `fsort`
+### Faster sorting for DataFrames
 
 You can sort `DataFrame`s (in ascending order only) faster than the `sort` function by using the `fsort` function. E.g.
 
 ```
 fsort(df, :col) # sort by `:col`
 fsort(df, [:col1, :col2]) # sort by `:col1` and `:col2`
+fsort!(df, :col) # sort by `:col` # sort in-place by `:col`
+fsort!(df, [:col1, :col2]) # sort in-place by `:col1` and `:col2`
 ```
 
 
