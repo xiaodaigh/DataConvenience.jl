@@ -16,7 +16,7 @@ fsort!(df, [:col1, :col2]) # sort in-place by `:col1` and `:col2`
 ```
 
 
-### `cleannames!`
+### Clean column names with `cleannames!`
 Somewhat similiar to R's `janitor::clean_names` so that `cleannames!(df)` cleans the names of a `DataFrame`.
 
 
@@ -80,4 +80,4 @@ will be computed
 ```
 
 ### StringVector
-`StringVector(v::CategoricalVector{String})` - Convert `v::CategoricalVector` efficiently to WeakRefStrings.StringVector
+`StringVector(v::CategoricalVector{String})` - Convert `v::CategoricalVector` efficiently to `WeakRefStrings.StringVector`
