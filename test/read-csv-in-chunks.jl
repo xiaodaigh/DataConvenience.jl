@@ -1,3 +1,4 @@
+using DataConvenience
 using DataFrames
 using CSV
 using Test
@@ -18,7 +19,7 @@ using Random: randstring
     dfs = [DataFrame(chunk) for chunk in chunks]
 
     made = reduce(vcat, dfs)
-    actual = CSV.read(filepath)
+    actual = CSV.read(filepath, DataFrame)
     @test nrow(made) == nrow(actual)
     @test ncol(made) == ncol(actual)
 

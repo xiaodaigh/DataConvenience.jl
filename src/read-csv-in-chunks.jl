@@ -13,7 +13,7 @@ Define a Chunking iterator on CSV file
 mutable struct CsvChunkIterator
     file::IOStream
     step::Int
-    column_headers::Vector{Symbol}
+    column_headers::Union{Vector{String}, Vector{Symbol}}
     csv_rows_params
 
     CsvChunkIterator(path::String, chunk_byte_size = 2^30; csv_rows_params...) = begin
@@ -47,7 +47,7 @@ Base.iterate(chunk_iterator::CsvChunkIterator) = begin
             CSV.read(
                 IOBuffer(
                     @view bytes_read[1:last_newline_pos]
-                );
+                ), DataFrame;
                 chunk_iterator.csv_rows_params...
             )
 
@@ -63,7 +63,7 @@ Base.iterate(chunk_iterator::CsvChunkIterator) = begin
             CSV.read(
                 IOBuffer(
                     @view bytes_read[1:last_newline_pos]
-                );
+                ), DataFrame;
                 header=chunk_iterator.column_headers,
                 chunk_iterator.csv_rows_params...
             )
