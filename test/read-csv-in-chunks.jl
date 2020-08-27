@@ -40,4 +40,7 @@ using Random: randstring
     made = reduce(vcat, dfs)
     @test nrow(made) == nrow(actual)
     @test ncol(made) == ncol(actual)
+
+
+    collect(CsvChunkIterator(filepath; header=0))
 end

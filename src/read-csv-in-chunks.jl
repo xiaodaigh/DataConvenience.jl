@@ -55,7 +55,8 @@ Base.iterate(chunk_iterator::CsvChunkIterator) = begin
 
         # removes header options from table
         c = chunk_iterator.csv_rows_params
-        d = Dict(zip(keys(c), values(c))...)
+        #d = Dict(zip(keys(c), values(c))...)
+        d = Dict(c)
         delete!(d, :head)
         chunk_iterator.csv_rows_params = (;d...)
     else
