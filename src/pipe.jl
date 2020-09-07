@@ -1,10 +1,4 @@
-# using Reexport
-
 export filter, @>, @as, @>>
-
-# @reexport using Lazy: @>, @as, @>>
-
-# @reexport using DataFrames: filter
 
 import Lazy: @>, @as, @>>
 
