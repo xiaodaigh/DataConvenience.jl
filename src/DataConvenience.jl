@@ -17,6 +17,7 @@ include("janitor.jl")
 include("create-missing.jl")
 include("read-csv-in-chunks.jl")
 include("fsort-dataframes.jl")
+include("pipe.jl")
 
 # head(df::AbstractDataFrame) = first(df, 10)
 #

@@ -20,6 +20,31 @@ fsort!(df, [:col1, :col2]) # sort in-place by `:col1` and `:col2`
 Somewhat similiar to R's `janitor::clean_names` so that `cleannames!(df)` cleans the names of a `DataFrame`.
 
 
+### Piping Convenience
+
+#### Re-exporting Lazy.jl's `@> @>> @as` for piping convenenice
+Lazy.jl has some macros for piping operations. However, it also exports the `groupby` function which will conflict with `DataFrames.groupby`. I have made it easier here so that it `using DataConvenience` will only export the macros `@> @>> @as` for use.
+
+#### Defining `filter(::AbstractDataFrame, arg)`
+DataFrames.jl doesn't define `filter(::AbstractDataFrame, arg)` and instead has `filter(arg, ::AbstractDataFrame)` only. This makes it inconsistent with other functions so I am defining `filter` where DataFrame
+
+#### Examples
+```julia
+using DataConvenience
+using DataFrames
+
+df = DataFrame(a=1:8)
+
+@> df begin
+    filter(:a => ==(1))
+end
+
+@as x df begin
+    filter(x, :a => ==(1))
+end
+
+```
+
 ### CSV Chunk Reader
 
 You can read a CSV in chunks and apply logic to each chunk. The types of each column is inferred by `CSV.read`.
