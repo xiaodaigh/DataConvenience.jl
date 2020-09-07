@@ -20,6 +20,4 @@ if false
     @> df begin
         filter(:a => ==(1))
     end
-
-
 end
