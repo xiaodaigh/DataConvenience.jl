@@ -1,7 +1,7 @@
 name = "DataConvenience"
 uuid = "3b531cbf-ee43-4e67-8118-dca2c9372f86"
 authors = ["Dai ZJ <zhuojia.dai@gmail.com>"]
-version = "0.1.7"
+version = "0.1.8"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
@@ -23,7 +23,7 @@ julia = "1"
 CategoricalArrays = "0.7, 0.8"
 CSV = "0.7"
 DataFrames = "0.19, 0.20, 0.21"
-Lazy = "0.15"
+Lazy = "0.14, 0.15"
 Missings = "0.4"
 SortingLab = "0.2"
 StatsBase = "0.32, 0.33"
