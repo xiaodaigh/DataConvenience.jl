@@ -18,6 +18,7 @@ include("create-missing.jl")
 include("read-csv-in-chunks.jl")
 include("fsort-dataframes.jl")
 include("pipe.jl")
+include("fast-missing-count.jl")
 
 # head(df::AbstractDataFrame) = first(df, 10)
 #

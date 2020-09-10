@@ -106,3 +106,22 @@ will be computed
 
 ### StringVector
 `StringVector(v::CategoricalVector{String})` - Convert `v::CategoricalVector` efficiently to `WeakRefStrings.StringVector`
+
+### Faster count missing
+
+There is a `count_missisng` function
+
+```julia
+x = Vector{Union{Missing, Int}}(undef, 10_000_000)
+
+cmx = count_missing(x) # this is faster
+
+cmx2 = countmissing(x) # this is faster
+
+cimx = count(ismissing, x) # the way available at base
+
+
+cmx == cimx # true
+```
+
+There is also the `count_non_missisng` function and `countnonmissing` is its synonym.

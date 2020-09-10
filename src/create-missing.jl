@@ -7,12 +7,12 @@ using Missings: disallowmissing
 
 Create a new column for where `col` is missing
 """
-create_missing!(df, col::Symbol) = begin
-	df[!, Symbol(string(col)*"_missing")] = ismissing.(df[!, col])
+create_missing!(df, col::Symbol; prefix="", suffix = "_missing") = begin
+	df[!, prefix*string(col)*suffix] = ismissing.(df[!, col])
 	if eltype(df[!, col]) <: Union{String, Missing}
-		df[!, col] = disallowmissing(coalesce.(df[!, col], "JULIA.MISSING"))
+		df[!, col] .= disallowmissing.(coalesce.(df[!, col], "JULIA.MISSING"))
 	else
-		df[!, col] = disallowmissing(coalesce.(df[!, col], zero(eltype(df[!, col]))))
+		df[!, col] .= disallowmissing.(coalesce.(df[!, col], zero(eltype(df[!, col]))))
 	end
 	df
 end
