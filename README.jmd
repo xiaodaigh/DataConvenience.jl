@@ -4,29 +4,13 @@ An eclectic collection of convenience functions for you.
 
 ## Data
 
-### Faster sorting for DataFrames
-
-You can sort `DataFrame`s (in ascending order only) faster than the `sort` function by using the `fsort` function. E.g.
-
-```
-fsort(df, :col) # sort by `:col`
-fsort(df, [:col1, :col2]) # sort by `:col1` and `:col2`
-fsort!(df, :col) # sort by `:col` # sort in-place by `:col`
-fsort!(df, [:col1, :col2]) # sort in-place by `:col1` and `:col2`
-```
-
-
-### Clean column names with `cleannames!`
-Somewhat similiar to R's `janitor::clean_names` so that `cleannames!(df)` cleans the names of a `DataFrame`.
-
-
 ### Piping Convenience
 
 #### Re-exporting Lazy.jl's `@> @>> @as` for piping convenenice
 Lazy.jl has some macros for piping operations. However, it also exports the `groupby` function which will conflict with `DataFrames.groupby`. I have made it easier here so that it `using DataConvenience` will only export the macros `@> @>> @as` for use.
 
 #### Defining `filter(::AbstractDataFrame, arg)`
-DataFrames.jl doesn't define `filter(::AbstractDataFrame, arg)` and instead has `filter(arg, ::AbstractDataFrame)` only. This makes it inconsistent with other functions so I am defining `filter` where DataFrame
+DataFrames.jl doesn't define `filter(::AbstractDataFrame, arg)` and instead has `filter(arg, ::AbstractDataFrame)` only. This makes it inconsistent with other functions so that's why I am defining `filter` like this here.
 
 #### Examples
 ```julia
@@ -45,15 +29,60 @@ end
 
 ```
 
+### Sampling with `sample`
+
+You can conveniently sample a dataframe with the `sample` method
+
+```
+df = DataFrame(a=1:10)
+
+# sample 10 rows
+sample(df, 10)
+```
+
+```
+# sample 10% of rows
+sample(df, 0.1)
+```
+
+```
+# sample 1/10 of rows
+sample(df, 1//10)
+```
+
+### Faster sorting for DataFrames
+
+You can sort `DataFrame`s (in ascending order only) faster than the `sort` function by using the `fsort` function. E.g.
+
+```julia
+using DataFrames
+df = DataFrame(col = rand(1_000_000), col1 = rand(1_000_000), col2 = rand(1_000_000))
+
+fsort(df, :col) # sort by `:col`
+fsort(df, [:col1, :col2]) # sort by `:col1` and `:col2`
+fsort!(df, :col) # sort by `:col` # sort in-place by `:col`
+fsort!(df, [:col1, :col2]) # sort in-place by `:col1` and `:col2`
+```
+
+### Clean column names with `cleannames!`
+Somewhat similiar to R's `janitor::clean_names` so that `cleannames!(df)` cleans the names of a `DataFrame`.
+
+
 ### CSV Chunk Reader
 
 You can read a CSV in chunks and apply logic to each chunk. The types of each column is inferred by `CSV.read`.
 
 ```julia
+using DataFrames
+using CSV
+
+df = DataFrame(a = rand(1_000_000), b = rand(Int8, 1_000_000), c = rand(Int8, 1_000_000))
+
+filepath = tempname()*".csv"
+CSV.write(filepath, df)
 
 for chunk in CsvChunkIterator(filepath)
-  # chunk is a DataFrame
-  # do something to df
+  print(chunk)
 end
 ```
 
@@ -62,15 +91,14 @@ The chunk iterator uses `CSV.read` parameters. The user can pass in `type` and `
 ```julia
 # read all column as String
 for chunk in CsvChunkIterator(filepath, type=String)
-  # df is a DataFrame where each column is String
-  # do something to df
+    print(chunk)
 end
 ```
 
 ```julia
 # read a three colunms csv where the column types are String, Int, Float32
 for chunk in CsvChunkIterator(filepath, types=[String, Int, Float32])
-  # do something to df
+  print(chunk
 end
 ```
 
@@ -82,6 +110,9 @@ end
 The first component of Canonical Correlation.
 
 ```
+x = rand(100, 5)
+y = rand(100, 5)
+
 canonicalcor(x, y)
 ```
 

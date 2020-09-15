@@ -2,3 +2,5 @@
 /Manifest.toml
 /dev/
 *.csv
+http-test/
+readme-env/
