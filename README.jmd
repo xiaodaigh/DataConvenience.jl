@@ -82,7 +82,7 @@ filepath = tempname()*".csv"
 CSV.write(filepath, df)
 
 for chunk in CsvChunkIterator(filepath)
-  print(chunk)
+  print(describe(chunk))
 end
 ```
 
@@ -91,14 +91,14 @@ The chunk iterator uses `CSV.read` parameters. The user can pass in `type` and `
 ```julia
 # read all column as String
 for chunk in CsvChunkIterator(filepath, type=String)
-    print(chunk)
+    print(describe(chunk))
 end
 ```
 
 ```julia
 # read a three colunms csv where the column types are String, Int, Float32
 for chunk in CsvChunkIterator(filepath, types=[String, Int, Float32])
-  print(chunk
+  print(describe(chunk))
 end
 ```
 
@@ -132,7 +132,7 @@ will be computed
 `@replicate code times` will run `code` multiple times e.g.
 
 ```julia
-@replicate 10 randstring(8)
+@replicate 10 8
 ```
 
 ### StringVector
