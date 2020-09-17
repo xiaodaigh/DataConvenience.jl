@@ -1,16 +1,16 @@
 # DataConvenience
 
-An eclectic collection of convenience functions for you.
+An eclectic collection of convenience functions for your data manipulation needs.
 
 ## Data
 
 ### Piping Convenience
 
 #### Re-exporting Lazy.jl's `@>` `@>>` `@as` for piping convenenice
-Lazy.jl has some macros for piping operations. However, it also exports the `groupby` function which will conflict with `DataFrames.groupby`. I have made it easier here so that it `using DataConvenience` will only export the macros `@> @>> @as` for use.
+Lazy.jl has some macros for piping operations. However, it also exports the `groupby` function which conflicts with `DataFrames.groupby`. I have made it easier here so that `using DataConvenience` will only export the macros `@>`, `@>>`,  `@as`. You can achieve the same with just Lazy.jl by doing `using Lazy: @>, @>>, @as`.
 
 #### Defining `filter(::AbstractDataFrame, arg)`
-DataFrames.jl doesn't define `filter(::AbstractDataFrame, arg)` and instead has `filter(arg, ::AbstractDataFrame)` only. This makes it inconsistent with other functions so that's why I am defining `filter` like this here.
+DataFrames.jl does not define `filter(::AbstractDataFrame, arg)` and instead has `filter(arg, ::AbstractDataFrame)` only. This makes it inconsistent with the other functions so that's why I am defining `filter` with the signature `filter(::AbstractDataFrame, arg)`.
 
 #### Examples
 ```julia
