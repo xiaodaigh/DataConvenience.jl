@@ -1,16 +1,16 @@
 # DataConvenience
 
-An eclectic collection of convenience functions for you.
+An eclectic collection of convenience functions for your data manipulation needs.
 
 ## Data
 
 ### Piping Convenience
 
 #### Re-exporting Lazy.jl's `@>` `@>>` `@as` for piping convenenice
-Lazy.jl has some macros for piping operations. However, it also exports the `groupby` function which will conflict with `DataFrames.groupby`. I have made it easier here so that it `using DataConvenience` will only export the macros `@> @>> @as` for use.
+Lazy.jl has some macros for piping operations. However, it also exports the `groupby` function which conflicts with `DataFrames.groupby`. I have made it easier here so that `using DataConvenience` will only export the macros `@>`, `@>>`,  `@as`. You can achieve the same with just Lazy.jl by doing `using Lazy: @>, @>>, @as`.
 
 #### Defining `filter(::AbstractDataFrame, arg)`
-DataFrames.jl doesn't define `filter(::AbstractDataFrame, arg)` and instead has `filter(arg, ::AbstractDataFrame)` only. This makes it inconsistent with other functions so that's why I am defining `filter` like this here.
+DataFrames.jl does not define `filter(::AbstractDataFrame, arg)` and instead has `filter(arg, ::AbstractDataFrame)` only. This makes it inconsistent with the other functions so that's why I am defining `filter` with the signature `filter(::AbstractDataFrame, arg)`.
 
 #### Examples
 ````julia
@@ -81,28 +81,49 @@ fsort!(df, [:col1, :col2]) # sort in-place by `:col1` and `:col2`
 
 ````
 1000000×3 DataFrame
-│ Row     │ col      │ col1       │ col2      │
-│         │ Float64  │ Float64    │ Float64   │
-├─────────┼──────────┼────────────┼───────────┤
-│ 1       │ 0.320482 │ 4.77923e-7 │ 0.842944  │
-│ 2       │ 0.685882 │ 1.23947e-6 │ 0.441782  │
-│ 3       │ 0.916983 │ 2.58514e-6 │ 0.108329  │
-│ 4       │ 0.736201 │ 2.98565e-6 │ 0.395387  │
-│ 5       │ 0.843101 │ 3.41412e-6 │ 0.932144  │
-│ 6       │ 0.203636 │ 3.97948e-6 │ 0.130982  │
-│ 7       │ 0.782815 │ 4.28472e-6 │ 0.0088574 │
+│ Row     │ col        │ col1       │ col2     │
+│         │ Float64    │ Float64    │ Float64  │
+├─────────┼────────────┼────────────┼──────────┤
+│ 1       │ 0.60294    │ 9.54947e-7 │ 0.850051 │
+│ 2       │ 0.122544   │ 2.14546e-6 │ 0.458279 │
+│ 3       │ 0.871649   │ 5.27342e-6 │ 0.729474 │
+│ 4       │ 0.184052   │ 6.52766e-6 │ 0.277486 │
+│ 5       │ 0.0581094  │ 6.70887e-6 │ 0.985599 │
+│ 6       │ 0.00336808 │ 7.16152e-6 │ 0.461214 │
+│ 7       │ 0.437509   │ 7.49094e-6 │ 0.977634 │
 ⋮
-│ 999993  │ 0.252146 │ 0.999993   │ 0.249611  │
-│ 999994  │ 0.495182 │ 0.999993   │ 0.158827  │
-│ 999995  │ 0.11513  │ 0.999994   │ 0.776428  │
-│ 999996  │ 0.531491 │ 0.999996   │ 0.258915  │
-│ 999997  │ 0.706716 │ 0.999997   │ 0.441219  │
-│ 999998  │ 0.176367 │ 0.999997   │ 0.26568   │
-│ 999999  │ 0.484837 │ 0.999999   │ 0.652338  │
-│ 1000000 │ 0.724168 │ 1.0        │ 0.658704  │
+│ 999993  │ 0.747417   │ 0.999994   │ 0.465973 │
+│ 999994  │ 0.434881   │ 0.999996   │ 0.479566 │
+│ 999995  │ 0.784486   │ 0.999997   │ 0.581013 │
+│ 999996  │ 0.217608   │ 0.999998   │ 0.318341 │
+│ 999997  │ 0.391109   │ 0.999998   │ 0.282909 │
+│ 999998  │ 0.649627   │ 0.999999   │ 0.177185 │
+│ 999999  │ 0.528241   │ 0.999999   │ 0.437638 │
+│ 1000000 │ 0.578139   │ 1.0        │ 0.176758 │
 ````
 
 
+
+````julia
+
+df = DataFrame(col = rand(1_000_000), col1 = rand(1_000_000), col2 = rand(1_000_000))
+
+using BenchmarkTools
+fsort_1col = @belapsed fsort($df, :col) # sort by `:col`
+fsort_2col = @belapsed fsort($df, [:col1, :col2]) # sort by `:col1` and `:col2`
+
+sort_1col = @belapsed sort($df, :col) # sort by `:col`
+sort_2col = @belapsed sort($df, [:col1, :col2]) # sort by `:col1` and `:col2`
+
+using Plots
+bar(["DataFrames.sort 1 col","DataFrames.sort 2 col2", "DataCon.sort 1 col","DataCon.sort 2 col2"],
+    [sort_1col, sort_2col, fsort_1col, fsort_2col],
+    title="DataFrames sort performance comparison",
+    label = "seconds")
+````
+
+
+![](figures/README_3_1.png)
 
 
 
@@ -138,11 +159,11 @@ end
  Nothing  │ DataType │
 ├─────┼──────────┼───────────┼────────────┼──────────┼──────────┼─────────┼
 ──────────┼──────────┤
-│ 1   │ a        │ 0.500221  │ 3.28784e-7 │ 0.500533 │ 0.999998 │         │
+│ 1   │ a        │ 0.499799  │ 3.16902e-7 │ 0.499554 │ 0.999999 │         │
           │ Float64  │
-│ 2   │ b        │ -0.495379 │ -128       │ -1.0     │ 127      │         │
+│ 2   │ b        │ -0.528347 │ -128       │ -1.0     │ 127      │         │
           │ Int64    │
-│ 3   │ c        │ -0.508338 │ -128       │ 0.0      │ 127      │         │
+│ 3   │ c        │ -0.547536 │ -128       │ -1.0     │ 127      │         │
           │ Int64    │
 ````
 
@@ -163,18 +184,18 @@ end
 
 ````
 3×8 DataFrame
-│ Row │ variable │ mean    │ min                   │ median  │ max         
-         │ nunique │ nmissing │ eltype   │
-│     │ Symbol   │ Nothing │ String                │ Nothing │ String      
-         │ Int64   │ Nothing  │ DataType │
-├─────┼──────────┼─────────┼───────────────────────┼─────────┼─────────────
-─────────┼─────────┼──────────┼──────────┤
-│ 1   │ a        │         │ 0.0001001904864574854 │         │ 9.8532092152
-04828e-7 │ 1000000 │          │ String   │
-│ 2   │ b        │         │ -1                    │         │ 99          
-         │ 256     │          │ String   │
-│ 3   │ c        │         │ -1                    │         │ 99          
-         │ 256     │          │ String   │
+│ Row │ variable │ mean    │ min                    │ median  │ max        
+          │ nunique │ nmissing │ eltype   │
+│     │ Symbol   │ Nothing │ String                 │ Nothing │ String     
+          │ Int64   │ Nothing  │ DataType │
+├─────┼──────────┼─────────┼────────────────────────┼─────────┼────────────
+──────────┼─────────┼──────────┼──────────┤
+│ 1   │ a        │         │ 0.00010033119361096965 │         │ 9.954606765
+316676e-5 │ 1000000 │          │ String   │
+│ 2   │ b        │         │ -1                     │         │ 99         
+          │ 256     │          │ String   │
+│ 3   │ c        │         │ -1                     │         │ 99         
+          │ 256     │          │ String   │
 ````
 
 
@@ -190,18 +211,18 @@ end
 
 ````
 3×8 DataFrame
-│ Row │ variable │ mean      │ min                   │ median │ max        
-          │ nunique │ nmissing │ eltype   │
-│     │ Symbol   │ Any       │ Any                   │ Union… │ Any        
-          │ Union…  │ Nothing  │ DataType │
-├─────┼──────────┼───────────┼───────────────────────┼────────┼────────────
-──────────┼─────────┼──────────┼──────────┤
-│ 1   │ a        │           │ 0.0001001904864574854 │        │ 9.853209215
-204828e-7 │ 1000000 │          │ String   │
-│ 2   │ b        │ -0.495379 │ -128                  │ -1.0   │ 127        
-          │         │          │ Int64    │
-│ 3   │ c        │ -0.508338 │ -128.0                │ 0.0    │ 127.0      
-          │         │          │ Float32  │
+│ Row │ variable │ mean      │ min                    │ median │ max       
+           │ nunique │ nmissing │ eltype   │
+│     │ Symbol   │ Any       │ Any                    │ Union… │ Any       
+           │ Union…  │ Nothing  │ DataType │
+├─────┼──────────┼───────────┼────────────────────────┼────────┼───────────
+───────────┼─────────┼──────────┼──────────┤
+│ 1   │ a        │           │ 0.00010033119361096965 │        │ 9.95460676
+5316676e-5 │ 1000000 │          │ String   │
+│ 2   │ b        │ -0.528347 │ -128                   │ -1.0   │ 127       
+           │         │          │ Int64    │
+│ 3   │ c        │ -0.547536 │ -128.0                 │ -1.0   │ 127.0     
+           │         │          │ Float32  │
 ````
 
 

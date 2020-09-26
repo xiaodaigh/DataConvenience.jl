@@ -64,6 +64,23 @@ fsort!(df, :col) # sort by `:col` # sort in-place by `:col`
 fsort!(df, [:col1, :col2]) # sort in-place by `:col1` and `:col2`
 ```
 
+```julia
+df = DataFrame(col = rand(1_000_000), col1 = rand(1_000_000), col2 = rand(1_000_000))
+
+using BenchmarkTools
+fsort_1col = @belapsed fsort($df, :col) # sort by `:col`
+fsort_2col = @belapsed fsort($df, [:col1, :col2]) # sort by `:col1` and `:col2`
+
+sort_1col = @belapsed sort($df, :col) # sort by `:col`
+sort_2col = @belapsed sort($df, [:col1, :col2]) # sort by `:col1` and `:col2`
+
+using Plots
+bar(["DataFrames.sort 1 col","DataFrames.sort 2 col2", "DataCon.sort 1 col","DataCon.sort 2 col2"],
+    [sort_1col, sort_2col, fsort_1col, fsort_2col],
+    title="DataFrames sort performance comparison",
+    label = "seconds")
+```
+
 ### Clean column names with `cleannames!`
 Somewhat similiar to R's `janitor::clean_names` so that `cleannames!(df)` cleans the names of a `DataFrame`.
 
