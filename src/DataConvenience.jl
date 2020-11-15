@@ -1,7 +1,7 @@
 module DataConvenience
 
 import WeakRefStrings:StringVector
-using DataFrames: categorical, AbstractDataFrame, DataFrame, names!
+using DataFrames: categorical, AbstractDataFrame, DataFrame, rename
 using CategoricalArrays
 using Statistics
 using Missings:nonmissingtype
