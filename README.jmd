@@ -13,17 +13,13 @@ DataFrames.jl does not define `filter(::AbstractDataFrame, arg)` and instead has
 ```julia
 using DataConvenience
 using DataFrames
+using Chain: @chain
 
 df = DataFrame(a=1:8)
 
-@> df begin
+@chain df begin
     filter(:a => ==(1))
 end
-
-@as x df begin
-    filter(x, :a => ==(1))
-end
-
 ```
 
 Note: DataConvenience.jl used to re-export Lazy.jl's `@>` which it no longer does. Users are encouraged to use [Chain.jl](https://github.com/jkrumbiegel/Chain.jl) instead.
