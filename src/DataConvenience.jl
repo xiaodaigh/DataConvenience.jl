@@ -1,7 +1,7 @@
 module DataConvenience
 
 import WeakRefStrings:StringVector
-using DataFrames: categorical, AbstractDataFrame, DataFrame, rename
+using DataFrames: AbstractDataFrame, DataFrame, rename
 using CategoricalArrays
 using Statistics
 using Missings:nonmissingtype
@@ -13,6 +13,7 @@ export cor, dfcor, @replicate, StringVector
 include("cate-arrays.jl")
 include("CCA.jl")
 include("janitor.jl")
+include("filter.jl")
 # include("replace_onehot.jl")
 include("create-missing.jl")
 include("read-csv-in-chunks.jl")

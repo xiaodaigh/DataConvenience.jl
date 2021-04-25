@@ -1,11 +1,11 @@
-# import DataFrames: AbstractDataFrame, transform, combine, groupby, select, select!
-# import Base.filter
+import DataFrames: AbstractDataFrame#, transform, combine, groupby, select, select!
+import Base.filter
 
 # const PAIR_LHS_TYPE = Union{Symbol, AbstractVector{Symbol}}
 
-# function Base.filter(df::AbstractDataFrame, f)
-#     filter(f, df)
-# end
+function Base.filter(df::AbstractDataFrame, f)
+    filter(f, df)
+end
 
 # function DataFrames.filter(f::Pair{S, T}) where {S <: PAIR_LHS_TYPE, T}
 #     df -> filter(df, f)

@@ -16,7 +16,7 @@ mutable struct CsvChunkIterator
     column_headers::Union{Vector{String}, Vector{Symbol}}
     csv_rows_params
 
-    CsvChunkIterator(path::String, chunk_byte_size = 2^30; csv_rows_params...) = begin
+    function CsvChunkIterator(path::String, chunk_byte_size = 2^30; csv_rows_params...)
          new(open(path, "r"), chunk_byte_size, Symbol[], csv_rows_params)
     end
 end
@@ -24,23 +24,31 @@ end
 Base.iterate(chunk_iterator::CsvChunkIterator) = begin
     first_read = position(chunk_iterator.file) == 0
     bytes_read = read(chunk_iterator.file, chunk_iterator.step)
+
+    # try to find the newline character
     last_newline_pos = findlast(x->x==UInt8('\n'), bytes_read)
 
     # no more to be read
+    # if it's nothing then
+
     if isnothing(last_newline_pos) & (length(bytes_read) == 0)
         close(chunk_iterator.file)
         return nothing
+    # have not found a new line, so continue
     elseif isnothing(last_newline_pos)
         if eof(chunk_iterator.file)
             close(chunk_iterator.file)
             # do nothing and go to CSV.read
             last_newline_pos = length(bytes_read)
-        else # increase step size
+        else
+            # increase step size but doubling
             chunk_iterator.step = 2chunk_iterator.step
+            # go back to the beginning
             seek(chunk_iterator.file, position(chunk_iterator.file) - length(bytes_read))
             return iterate(chunk_iterator)
         end
     end
+
 
     if first_read
         df =

@@ -7,15 +7,15 @@ using Random: randstring
 @testset "read csv in chunks" begin
     filepath = "tmp.csv"
 
-    M = 100_000
+    M = 1000
     str_base = [randstring(8) for i in 1:1_000]
-    df = DataFrame(int = rand(Int32, M), float=rand(M), str = rand(str_base, M))
+    @time df = DataFrame(int = rand(Int32, M), float=rand(M), str = rand(str_base, M))
 
-    CSV.write(filepath, df)
+    @time CSV.write(filepath, df)
 
-    # read the file 7 rows at a time
-    # where the file is of size 32 rows
-    chunks = CsvChunkIterator(filepath, 10)
+    # read the file 100 bytes at a time
+    chunks = CsvChunkIterator(filepath, 100)
+
     dfs = [DataFrame(chunk) for chunk in chunks]
 
     made = reduce(vcat, dfs)
@@ -23,8 +23,7 @@ using Random: randstring
     @test nrow(made) == nrow(actual)
     @test ncol(made) == ncol(actual)
 
-    # read the file 7 rows at a time
-    # where the file is of size 32 rows
+    # read the file 500 bytes
     chunks = CsvChunkIterator(filepath, 500)
     dfs = [DataFrame(chunk) for chunk in chunks]
 
