@@ -1,7 +1,7 @@
 name = "DataConvenience"
 uuid = "3b531cbf-ee43-4e67-8118-dca2c9372f86"
 authors = ["Dai ZJ <zhuojia.dai@gmail.com>"]
-version = "0.2.1"
+version = "0.2.2"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
@@ -19,7 +19,7 @@ WeakRefStrings = "ea10d353-3f73-51f8-a26c-33c1cb351aa5"
 
 [compat]
 CSV = "0.7, 0.8"
-CategoricalArrays = "0.7, 0.8, 0.9"
+CategoricalArrays = "0.7, 0.8, 0.9, 0.10"
 DataFrames = "1"
 Missings = "1"
 SortingLab = "0.2"
