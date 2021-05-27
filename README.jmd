@@ -4,26 +4,6 @@ An eclectic collection of convenience functions for your data manipulation needs
 
 ## Data
 
-### Piping Convenience
-
-#### Defining `filter(::AbstractDataFrame, arg)`
-DataFrames.jl does not define `filter(::AbstractDataFrame, arg)` and instead has `filter(arg, ::AbstractDataFrame)` only. This makes it inconsistent with the other functions so that's why I am defining `filter` with the signature `filter(::AbstractDataFrame, arg)`.
-
-#### Examples
-```julia
-using DataConvenience
-using DataFrames
-using Chain: @chain
-
-df = DataFrame(a=1:8)
-
-@chain df begin
-    filter(:a => ==(1))
-end
-```
-
-Note: DataConvenience.jl used to re-export Lazy.jl's `@>` which it no longer does. Users are encouraged to use [Chain.jl](https://github.com/jkrumbiegel/Chain.jl) instead.
-
 ### Sampling with `sample`
 
 You can conveniently sample a dataframe with the `sample` method
@@ -50,6 +30,7 @@ sample(df, 1//10)
 You can sort `DataFrame`s (in ascending order only) faster than the `sort` function by using the `fsort` function. E.g.
 
 ```julia
+using DataConvenience
 using DataFrames
 df = DataFrame(col = rand(1_000_000), col1 = rand(1_000_000), col2 = rand(1_000_000))
 

@@ -4,38 +4,6 @@ An eclectic collection of convenience functions for your data manipulation needs
 
 ## Data
 
-### Piping Convenience
-
-#### Defining `filter(::AbstractDataFrame, arg)`
-DataFrames.jl does not define `filter(::AbstractDataFrame, arg)` and instead has `filter(arg, ::AbstractDataFrame)` only. This makes it inconsistent with the other functions so that's why I am defining `filter` with the signature `filter(::AbstractDataFrame, arg)`.
-
-#### Examples
-```julia
-using DataConvenience
-using DataFrames
-using Chain: @chain
-
-df = DataFrame(a=1:8)
-
-@chain df begin
-    filter(:a => ==(1))
-end
-```
-
-```
-1×1 DataFrame
- Row │ a
-     │ Int64
-─────┼───────
-   1 │     1
-```
-
-
-
-
-
-Note: DataConvenience.jl used to re-export Lazy.jl's `@>` which it no longer does. Users are encouraged to use [Chain.jl](https://github.com/jkrumbiegel/Chain.jl) instead.
-
 ### Sampling with `sample`
 
 You can conveniently sample a dataframe with the `sample` method
@@ -62,6 +30,7 @@ sample(df, 1//10)
 You can sort `DataFrame`s (in ascending order only) faster than the `sort` function by using the `fsort` function. E.g.
 
 ```julia
+using DataConvenience
 using DataFrames
 df = DataFrame(col = rand(1_000_000), col1 = rand(1_000_000), col2 = rand(1_000_000))
 
@@ -73,26 +42,26 @@ fsort!(df, [:col1, :col2]) # sort in-place by `:col1` and `:col2`
 
 ```
 1000000×3 DataFrame
-     Row │ col        col1        col2
-         │ Float64    Float64     Float64
-─────────┼──────────────────────────────────
-       1 │ 0.561204   7.28226e-7  0.364491
-       2 │ 0.552371   1.55213e-6  0.449652
-       3 │ 0.995762   2.64605e-6  0.024013
-       4 │ 0.601954   3.16072e-6  0.743319
-       5 │ 0.932321   6.11559e-6  0.190004
-       6 │ 0.147286   6.73857e-6  0.0394049
-       7 │ 0.722439   8.40162e-6  0.0565526
-       8 │ 0.358826   8.62958e-6  0.788989
-    ⋮    │     ⋮          ⋮           ⋮
-  999994 │ 0.79161    0.999993    0.312891
-  999995 │ 0.779757   0.999996    0.0197649
-  999996 │ 0.681739   0.999997    0.0685774
-  999997 │ 0.736364   0.999997    0.15211
-  999998 │ 0.259878   0.999997    0.480823
-  999999 │ 0.943275   0.999998    0.96846
- 1000000 │ 0.837561   0.999999    0.289213
-                         999985 rows omitted
+     Row │ col         col1        col2
+         │ Float64     Float64     Float64
+─────────┼───────────────────────────────────
+       1 │ 0.3708      7.98914e-7  0.0982182
+       2 │ 0.743345    8.62962e-7  0.609425
+       3 │ 0.379679    1.0321e-6   0.353734
+       4 │ 0.0357946   4.01304e-6  0.632459
+       5 │ 0.588126    4.32507e-6  0.439859
+       6 │ 0.706394    4.54834e-6  0.811462
+       7 │ 0.228183    4.76902e-6  0.0418427
+       8 │ 0.3761      5.15514e-6  0.163736
+    ⋮    │     ⋮           ⋮           ⋮
+  999994 │ 0.469715    0.999991    0.442478
+  999995 │ 0.971895    0.999992    0.637568
+  999996 │ 0.891238    0.999993    0.72935
+  999997 │ 0.404767    0.999993    0.905502
+  999998 │ 0.249169    0.999996    0.584482
+  999999 │ 0.784547    0.999997    0.362961
+ 1000000 │ 0.705492    1.0         0.296773
+                          999985 rows omitted
 ```
 
 
@@ -114,7 +83,7 @@ bar(["DataFrames.sort 1 col","DataFrames.sort 2 col2", "DataCon.sort 1 col","Dat
     label = "seconds")
 ```
 
-![](figures/README_3_1.png)
+![](figures/README_2_1.png)
 
 
 
@@ -142,18 +111,18 @@ end
 
 ```
 3×7 DataFrame
- Row │ variable  mean       min            median     max    nmissing  elty
-pe
-     │ Symbol    Float64    Real           Float64    Real   Int64     Data
-Type
+ Row │ variable  mean       min            median     max         nmissing 
+ eltype
+     │ Symbol    Float64    Real           Float64    Real        Int64    
+ DataType
 ─────┼─────────────────────────────────────────────────────────────────────
-─────
-   1 │ a          0.499336     1.48721e-6   0.499138    1.0         0  Floa
-t64
-   2 │ b         -0.495945  -128            0.0       127           0  Int6
-4
-   3 │ c         -0.574404  -128           -1.0       127           0  Int6
-4
+──────────
+   1 │ a          0.500112     9.77158e-7   0.500207    0.999999         0 
+ Float64
+   2 │ b         -0.446016  -128            0.0       127                0 
+ Int64
+   3 │ c         -0.667185  -128           -1.0       127                0 
+ Int64
 ```
 
 
@@ -177,8 +146,8 @@ end
       Int64     DataType
 ─────┼─────────────────────────────────────────────────────────────────────
 ─────────────────────────
-   1 │ a                  0.00010077562806376505           9.79725879761694
-8e-5         0  String
+   1 │ a                  0.00010057134141727708           9.77544678875119
+6e-5         0  String
    2 │ b                  -1                               99              
              0  String
    3 │ c                  -1                               99              
@@ -202,11 +171,11 @@ end
        Int64     DataType
 ─────┼─────────────────────────────────────────────────────────────────────
 ──────────────────────────
-   1 │ a                    0.00010077562806376505          9.7972587976169
-48e-5         0  String
-   2 │ b         -0.495945  -128                    0.0     127            
+   1 │ a                    0.00010057134141727708          9.7754467887511
+96e-5         0  String
+   2 │ b         -0.446016  -128                    0.0     127            
               0  Int64
-   3 │ c         -0.574404  -128.0                  -1.0    127.0          
+   3 │ c         -0.667185  -128.0                  -1.0    127.0          
               0  Float32
 ```
 
