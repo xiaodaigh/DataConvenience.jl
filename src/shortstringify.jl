@@ -1,4 +1,9 @@
 # Original code courtesy of Nils Gudat
+using ShortStrings: ShortString
+using Missings: passmissing
+using PooledArrays
+
+export short_stringify!
 
 # Functions to turn String columns into ShortStrings
 function short_stringify(x::AbstractVector)
@@ -13,4 +18,4 @@ function short_stringify!(df::DataFrame)
     end
     return df
 end
-  
+
