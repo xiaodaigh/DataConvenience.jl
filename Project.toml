@@ -26,6 +26,7 @@ Missings = "1"
 SortingLab = "0.2"
 StatsBase = "0.32, 0.33"
 Tables = "1"
+TableOperations = "1"
 WeakRefStrings = "0.6, 1"
 julia = "1"
 
