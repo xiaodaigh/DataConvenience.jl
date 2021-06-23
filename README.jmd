@@ -60,6 +60,21 @@ bar(["DataFrames.sort 1 col","DataFrames.sort 2 col2", "DataCon.sort 1 col","Dat
 ### Clean column names with `cleannames!`
 Somewhat similiar to R's `janitor::clean_names` so that `cleannames!(df)` cleans the names of a `DataFrame`.
 
+### One hot encoding
+
+```
+a = DataFrame(
+  player1 = ["a", "b", "c"],
+  player2 = ["d", "c", "a"]
+)
+
+# does not modify a
+onehot(a, :player1)
+
+# modfies a
+onehot!(a, :player1)
+```
+
 
 ### CSV Chunk Reader
 
