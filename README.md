@@ -45,22 +45,22 @@ fsort!(df, [:col1, :col2]) # sort in-place by `:col1` and `:col2`
      Row │ col       col1        col2
          │ Float64   Float64     Float64
 ─────────┼─────────────────────────────────
-       1 │ 0.95298   2.40468e-8  0.274197
-       2 │ 0.100822  5.43567e-7  0.764761
-       3 │ 0.445557  9.55935e-7  0.263688
-       4 │ 0.136386  2.60883e-6  0.659607
-       5 │ 0.568898  2.66762e-6  0.77789
-       6 │ 0.666694  2.71565e-6  0.838029
-       7 │ 0.311161  3.46322e-6  0.774721
-       8 │ 0.743033  3.56981e-6  0.979397
+       1 │ 0.105124  1.55446e-6  0.100017
+       2 │ 0.809754  2.25957e-6  0.616879
+       3 │ 0.293     2.56491e-6  0.715032
+       4 │ 0.30266   3.37852e-6  0.9849
+       5 │ 0.178425  3.84486e-6  0.866251
+       6 │ 0.473456  5.45083e-6  0.027404
+       7 │ 0.172007  7.40482e-6  0.0996898
+       8 │ 0.713334  7.86618e-6  0.32976
     ⋮    │    ⋮          ⋮           ⋮
-  999994 │ 0.33961   0.999993    0.503673
-  999995 │ 0.907282  0.999996    0.264907
-  999996 │ 0.69553   0.999996    0.295978
-  999997 │ 0.419872  0.999996    0.48607
-  999998 │ 0.154967  0.999998    0.0984277
-  999999 │ 0.536315  0.999999    0.217873
- 1000000 │ 0.859866  0.999999    0.117873
+  999994 │ 0.878301  0.99999     0.304089
+  999995 │ 0.573439  0.999992    0.9735
+  999996 │ 0.292394  0.999994    0.306291
+  999997 │ 0.917362  0.999994    0.347056
+  999998 │ 0.641369  0.999994    0.925751
+  999999 │ 0.393304  0.999995    0.224786
+ 1000000 │ 0.169994  0.999997    0.476451
                         999985 rows omitted
 ```
 
@@ -89,6 +89,23 @@ bar(["DataFrames.sort 1 col","DataFrames.sort 2 col2", "DataCon.sort 1 col","Dat
 
 ### Clean column names with `cleannames!`
 Somewhat similiar to R's `janitor::clean_names` so that `cleannames!(df)` cleans the names of a `DataFrame`.
+
+### Nesting of `DataFrame`s
+
+Sometimes, nesting is more convenient then using `GroupedDataFrame`s
+
+```
+using DataFrames
+df = DataFrame(
+        a = rand(1:8, 1000),
+        b = rand(1:8, 1000),
+        c = rand(1:8, 1000),
+    )
+
+nested_df = nest(df, :a, :nested_df)
+```
+
+To unnest use `unnest(nested_df, :nested_df)`.
 
 ### One hot encoding
 
@@ -126,18 +143,18 @@ end
 
 ```
 3×7 DataFrame
- Row │ variable  mean       min            median     max         nmissing 
- eltype
-     │ Symbol    Float64    Real           Float64    Real        Int64    
- DataType
+ Row │ variable  mean       min            median    max         nmissing  
+eltype
+     │ Symbol    Float64    Real           Float64   Real        Int64     
+DataType
 ─────┼─────────────────────────────────────────────────────────────────────
-──────────
-   1 │ a          0.500244     1.37953e-6   0.500304    0.999999         0 
- Float64
-   2 │ b         -0.509408  -128           -1.0       127                0 
- Int64
-   3 │ c         -0.587495  -128           -1.0       127                0 
- Int64
+─────────
+   1 │ a          0.499792     7.51554e-7   0.49979    0.999999         0  
+Float64
+   2 │ b         -0.568238  -128           -1.0      127                0  
+Int64
+   3 │ c         -0.411018  -128            0.0      127                0  
+Int64
 ```
 
 
@@ -155,18 +172,18 @@ end
 
 ```
 3×7 DataFrame
- Row │ variable  mean     min                    median   max              
-     nmissing  eltype
-     │ Symbol    Nothing  String                 Nothing  String           
-     Int64     DataType
+ Row │ variable  mean     min                     median   max             
+      nmissing  eltype
+     │ Symbol    Nothing  String                  Nothing  String          
+      Int64     DataType
 ─────┼─────────────────────────────────────────────────────────────────────
-────────────────────────
-   1 │ a                  0.0001000242096453885           9.918498010730303
-e-5         0  String
-   2 │ b                  -1                              99               
-            0  String
-   3 │ c                  -1                              99               
-            0  String
+─────────────────────────
+   1 │ a                  0.00010009729096260855           9.98587611572565
+6e-5         0  String
+   2 │ b                  -1                               99              
+             0  String
+   3 │ c                  -1                               99              
+             0  String
 ```
 
 
@@ -180,18 +197,18 @@ end
 
 ```
 3×7 DataFrame
- Row │ variable  mean       min                    median  max             
-      nmissing  eltype
-     │ Symbol    Union…     Any                    Union…  Any             
-      Int64     DataType
+ Row │ variable  mean       min                     median  max            
+       nmissing  eltype
+     │ Symbol    Union…     Any                     Union…  Any            
+       Int64     DataType
 ─────┼─────────────────────────────────────────────────────────────────────
-─────────────────────────
-   1 │ a                    0.0001000242096453885          9.91849801073030
-3e-5         0  String
-   2 │ b         -0.509408  -128                   -1.0    127             
-             0  Int64
-   3 │ c         -0.587495  -128.0                 -1.0    127.0           
-             0  Float32
+──────────────────────────
+   1 │ a                    0.00010009729096260855          9.9858761157256
+56e-5         0  String
+   2 │ b         -0.568238  -128                    -1.0    127            
+              0  Int64
+   3 │ c         -0.411018  -128.0                  0.0     127.0          
+              0  Float32
 ```
 
 
