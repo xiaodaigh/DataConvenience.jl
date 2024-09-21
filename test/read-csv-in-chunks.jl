@@ -5,7 +5,7 @@ using Test
 using Random: randstring
 
 @testset "read csv in chunks" begin
-    filepath = "tmp.csv"
+    filepath = joinpath(tempdir(), "tmp-data-convenience-csv-chunking-test.csv")
 
     M = 1000
     str_base = [randstring(8) for i in 1:1_000]

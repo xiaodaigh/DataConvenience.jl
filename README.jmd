@@ -106,7 +106,8 @@ df = DataFrame(a = rand(1_000_000), b = rand(Int8, 1_000_000), c = rand(Int8, 1_
 filepath = tempname()*".csv"
 CSV.write(filepath, df)
 
-for chunk in CsvChunkIterator(filepath)
+for (i, chunk) in enumerate(CsvChunkIterator(filepath))
+    println(i)
   print(describe(chunk))
 end
 ```
@@ -115,7 +116,8 @@ The chunk iterator uses `CSV.read` parameters. The user can pass in `type` and `
 
 ```julia
 # read all column as String
-for chunk in CsvChunkIterator(filepath, type=String)
+for (i, chunk) in enumerate(CsvChunkIterator(filepath, types=String))
+    println(i)
     print(describe(chunk))
 end
 ```

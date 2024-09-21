@@ -42,26 +42,26 @@ fsort!(df, [:col1, :col2]) # sort in-place by `:col1` and `:col2`
 
 ```
 1000000×3 DataFrame
-     Row │ col       col1        col2
-         │ Float64   Float64     Float64
-─────────┼─────────────────────────────────
-       1 │ 0.105124  1.55446e-6  0.100017
-       2 │ 0.809754  2.25957e-6  0.616879
-       3 │ 0.293     2.56491e-6  0.715032
-       4 │ 0.30266   3.37852e-6  0.9849
-       5 │ 0.178425  3.84486e-6  0.866251
-       6 │ 0.473456  5.45083e-6  0.027404
-       7 │ 0.172007  7.40482e-6  0.0996898
-       8 │ 0.713334  7.86618e-6  0.32976
-    ⋮    │    ⋮          ⋮           ⋮
-  999994 │ 0.878301  0.99999     0.304089
-  999995 │ 0.573439  0.999992    0.9735
-  999996 │ 0.292394  0.999994    0.306291
-  999997 │ 0.917362  0.999994    0.347056
-  999998 │ 0.641369  0.999994    0.925751
-  999999 │ 0.393304  0.999995    0.224786
- 1000000 │ 0.169994  0.999997    0.476451
-                        999985 rows omitted
+     Row │ col        col1        col2
+         │ Float64    Float64     Float64
+─────────┼───────────────────────────────────
+       1 │ 0.46685    2.53832e-7  0.0374635
+       2 │ 0.404717   4.47445e-7  0.267923
+       3 │ 0.724972   1.04096e-6  0.665079
+       4 │ 0.57888    1.70257e-6  0.404758
+       5 │ 0.385235   2.39225e-6  0.0781073
+       6 │ 0.800285   6.07543e-6  0.00295096
+       7 │ 0.940843   6.69252e-6  0.704978
+       8 │ 0.817557   8.0119e-6   0.574785
+    ⋮    │     ⋮          ⋮           ⋮
+  999994 │ 0.179524   0.999994    0.64448
+  999995 │ 0.0100945  0.999994    0.953052
+  999996 │ 0.214368   0.999995    0.224151
+  999997 │ 0.3488     0.999996    0.91864
+  999998 │ 0.930586   0.999997    0.894878
+  999999 │ 0.0312132  0.999999    0.830381
+ 1000000 │ 0.752231   1.0         0.471916
+                          999985 rows omitted
 ```
 
 
@@ -136,25 +136,27 @@ df = DataFrame(a = rand(1_000_000), b = rand(Int8, 1_000_000), c = rand(Int8, 1_
 filepath = tempname()*".csv"
 CSV.write(filepath, df)
 
-for chunk in CsvChunkIterator(filepath)
+for (i, chunk) in enumerate(CsvChunkIterator(filepath))
+    println(i)
   print(describe(chunk))
 end
 ```
 
 ```
+1
 3×7 DataFrame
- Row │ variable  mean       min            median    max         nmissing  
-eltype
-     │ Symbol    Float64    Real           Float64   Real        Int64     
-DataType
+ Row │ variable  mean       min            median     max         nmissing 
+ eltype
+     │ Symbol    Float64    Real           Float64    Real        Int64    
+ DataType
 ─────┼─────────────────────────────────────────────────────────────────────
-─────────
-   1 │ a          0.499792     7.51554e-7   0.49979    0.999999         0  
-Float64
-   2 │ b         -0.568238  -128           -1.0      127                0  
-Int64
-   3 │ c         -0.411018  -128            0.0      127                0  
-Int64
+──────────
+   1 │ a          0.499738     4.36023e-8   0.499524    0.999999         0 
+ Float64
+   2 │ b         -0.469557  -128            0.0       127                0 
+ Int64
+   3 │ c         -0.547335  -128           -1.0       127                0 
+ Int64
 ```
 
 
@@ -165,25 +167,27 @@ The chunk iterator uses `CSV.read` parameters. The user can pass in `type` and `
 
 ```julia
 # read all column as String
-for chunk in CsvChunkIterator(filepath, type=String)
+for (i, chunk) in enumerate(CsvChunkIterator(filepath, types=String))
+    println(i)
     print(describe(chunk))
 end
 ```
 
 ```
+1
 3×7 DataFrame
- Row │ variable  mean     min                     median   max             
-      nmissing  eltype
-     │ Symbol    Nothing  String                  Nothing  String          
-      Int64     DataType
+ Row │ variable  mean     min                    median   max              
+     nmissing  eltype
+     │ Symbol    Nothing  String                 Nothing  String           
+     Int64     DataType
 ─────┼─────────────────────────────────────────────────────────────────────
-─────────────────────────
-   1 │ a                  0.00010009729096260855           9.98587611572565
-6e-5         0  String
-   2 │ b                  -1                               99              
-             0  String
-   3 │ c                  -1                               99              
-             0  String
+────────────────────────
+   1 │ a                  0.0001001901435260244           9.997666658245752
+e-5         0  String
+   2 │ b                  -1                              99               
+            0  String
+   3 │ c                  -1                              99               
+            0  String
 ```
 
 
@@ -197,18 +201,18 @@ end
 
 ```
 3×7 DataFrame
- Row │ variable  mean       min                     median  max            
-       nmissing  eltype
-     │ Symbol    Union…     Any                     Union…  Any            
-       Int64     DataType
+ Row │ variable  mean       min                    median  max             
+      nmissing  eltype
+     │ Symbol    Union…     Any                    Union…  Any             
+      Int64     DataType
 ─────┼─────────────────────────────────────────────────────────────────────
-──────────────────────────
-   1 │ a                    0.00010009729096260855          9.9858761157256
-56e-5         0  String
-   2 │ b         -0.568238  -128                    -1.0    127            
-              0  Int64
-   3 │ c         -0.411018  -128.0                  0.0     127.0          
-              0  Float32
+─────────────────────────
+   1 │ a                    0.0001001901435260244          9.99766665824575
+2e-5         0  String
+   2 │ b         -0.469557  -128                   0.0     127             
+             0  Int64
+   3 │ c         -0.547335  -128.0                 -1.0    127.0           
+             0  Float32
 ```
 
 
